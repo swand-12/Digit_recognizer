@@ -50,6 +50,12 @@ model = CNN().to(device)  # Move the model to the appropriate device
 model.load_state_dict(torch.load("digit_recognizer_model.pth", map_location=device))  # Load model weights
 model.eval()  # Set the model to evaluation mode
 
+# Dictionary for digit to word mapping
+digit_to_word = {
+    0: "zero", 1: "one", 2: "two", 3: "three", 4: "four",
+    5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"
+}
+
 # Streamlit interface
 st.title("Digit Recognizer")
 st.write("Draw a digit in the box below and click 'Predict'.")
@@ -88,7 +94,9 @@ if st.button("Predict"):
                 output = model(img)
                 _, predicted = torch.max(output, 1)
                 predicted_digit = predicted.item()
-                st.write(f"Predicted Digit: {predicted_digit}")
+                
+                # Display predicted digit and word equivalent
+                st.write(f"Predicted Digit: {predicted_digit} ({digit_to_word[predicted_digit]})")
 
                 # Ask for user confirmation
                 correct_answer = st.number_input("Is this correct? Enter the correct digit if not:", min_value=0, max_value=9, value=predicted_digit)
